@@ -1,5 +1,4 @@
 #include "../h/map.h"
-#include "../h/my_string.h"
 
 int three_in_min(int** map, short index1, short index2) {
     short min = -1, i1, i2, i3;
@@ -19,26 +18,56 @@ int three_in_min(int** map, short index1, short index2) {
 }
 
 int* max_index(int** map) {
-    short max = -1,i, j;
-    int* max_ind = (int*)malloc(sizeof(int)*2);
-    for(i = 0; map[i]; i++) {
-        for(j = 0; map[i][j] != -1; j++) {
-            if(map[i][j] > max) {
-                max = map[i][j];
-                max_ind[0] = i;
-                max_ind[1] = j;
+    short i, j,flag,index=0,flg,ind;
+    int* max_i = (int*)malloc(sizeof(int)*3); 
+    max_i[0] = 0;
+    max_i[1] = 0;
+    max_i[2] = 0;
+    for(i = 2; map[i]; i++) {
+        for(j = 2; map[i][j] != -1; j++) {
+            if(map[i][j]!= 0){
+                flag = 1;
+                flg = 1;
+                for (index = 0; map[i-index][j]!=-1 && map[i][j-index]!=-1 && map[i-index][j-index]!=-1; index++)
+                {
+                    if(map[i-index][j]>0 && map[i][j-index]>0){
+                        flg = 1;
+                        for(ind = 0; map[i-index][j-ind]!=-1; ind++) {
+                            if(map[i-index][j-ind]<1) {
+                                flg = 0;
+                                break;
+                            }
+                        }
+                        if(flg == 1) {
+                            flag++;
+                        }
+                    }
+                    if(flg == 0){
+                        break;
+                    }
+                }
             }
+            if (max_i[2]<flag && map[i][j]!= 0) {
+                max_i[0]=j;
+                max_i[1]=i;
+                max_i[2]=flag;
+            }
+            
         } 
     }
+    int *max_ind = (int*)malloc(sizeof(int)*2);
+    max_ind[0]=max_i[0];
+    max_ind[1]=max_i[1];
+    free(max_i);
     return max_ind;
 }
 
+
 int** map_designation(int** map, short ind1, short ind2) {
-    short index = 0, i, j;
-    for(i = 1; i <= ind2; i++) {
-        if(map[ind1 - i][ind2 - i] > 0 && map[ind1][ind2 - i] > 0 && map[ind1 - i][ind2] > 0) {
-            index++; 
-        }
+    short index, i, j;
+    if(ind1 < ind2) index = ind1;
+    else {
+        index = ind2;
     }
     map[ind1][ind2] = -2;
     for(i = 1; i < index; i++) {
@@ -59,10 +88,9 @@ int** map_designation(int** map, short ind1, short ind2) {
 }
 
 int** my_square(int** map) {
-    short index1 = 1, index2 = 1;
-    short flag;
+    short index1 = 2, index2 = 2;
     for( ; map[index1]; index1++) {
-        for(index2 = 1 ; map[index1][index2] != -1; index2++) {
+        for(index2 = 2 ; map[index1][index2] != -1; index2++) {
             if(map[index1][index2] > 0) {
                 map[index1][index2] += three_in_min(map, index1, index2);
             }
