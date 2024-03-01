@@ -1,4 +1,5 @@
 #include "../h/map.h"
+#include "../h/my_string.h"
 
 int three_in_min(int** map, short index1, short index2) {
     short min = -1, i1, i2, i3;
